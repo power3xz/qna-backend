@@ -23,7 +23,7 @@ router.get('/qna', validationMiddleware.getQuestionList, (req, res) => {
   }).then((questionList) => {
     if (res.get('X-Cache-Hit') === 'false') {
       cache.setQuestionListCache(offset, limit, questionList);
-    } 
+    }
     res.send(questionList);
   }).catch((err) => {
     console.log(err);
@@ -50,7 +50,7 @@ router.get('/qna/:id', validationMiddleware.getQuestion, (req, res) => {
 
     if (res.get('X-Cache-Hit') === 'false') {
       cache.setQuestionCache(id, question);
-    } 
+    }
     res.send(question);
   }).catch((err) => {
     console.log(err);
@@ -100,8 +100,21 @@ router.put('/qna/:id', validationMiddleware.updateQuestion, (req, res) => {
 
 // delete methods
 //   Q&A 게시물 삭제 API
-router.delete('/qna/:id', (req, res) => {
-  res.send(req.url);
+router.delete('/qna/:id', validationMiddleware.deleteQuestion, (req, res) => {
+  const id = req.params.id;
+  db.getQuestion(id).then((question) => {
+    if (question.length < 1) {
+      res.status(404).send('존재하지 않는 게시물');
+      return;
+    }
+
+    return db.deleteQuestion(id);
+  }).then((result) => {
+    res.status(204).send('성공');
+  }).catch((err) => {
+    console.log(err);
+    res.status(400).send('서버 에러');
+  })
 });
 
 export default router;

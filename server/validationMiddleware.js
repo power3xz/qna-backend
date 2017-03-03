@@ -53,6 +53,18 @@ export function updateQuestion(req, res, next) {
   next();
 }
 
+// DELETE /qna/:id
+export function deleteQuestion(req, res, next) {
+  const id = req.params.id;
+
+  if (!validator.isNumeric(id)) {
+    res.status(400).send('path parameter validation 실패');
+    return;
+  }
+
+  next();
+}
+
 function isValidQuestion(question) {
   const titleLength = {
     min: 10,

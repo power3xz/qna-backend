@@ -72,3 +72,9 @@ export function updateQuestion(id) {
     }]);
   });
 }
+
+export function deleteQuestion(id) {
+  return new Promise((resolve, reject) => {
+    resolve(true);
+  });
+}
