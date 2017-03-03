@@ -60,7 +60,18 @@ router.get('/qna/:id', validationMiddleware.getQuestion, (req, res) => {
 
 //   Q&A 게시물 CSV 내보내기 API
 router.get('/qna.csv', (req, res) => {
-  res.send(req.url);
+  db.getQuestionList(0, 100).then((questionList) => {
+    let csv = '"질문 ID", "질문 제목", "질문 본문", "게시물 작성일", "게시물 작성일", "답변 변호사"\n';
+    csv += questionList.map((question) => {
+      let lawyers = question.answers.map((answer) => { return answer.lawyer }).join(', ');
+      return `${question.id}, "${question.title}", "${question.body}", "${question.createdAt}", "${question.updatedAt}", "${lawyers}"`;
+    }).join('\n');
+    
+    res.send(csv);
+  }).catch((err) => {
+    console.log(err);
+    res.status(500).send('서버 에러');
+  });
 });
 
 // post methods
