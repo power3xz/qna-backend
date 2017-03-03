@@ -42,12 +42,26 @@ export function getQuestionList(req, res, next) {
   const offset = req.query.offset;
   const limit = req.query.limit;
 
-  if (!validator.isNumeric(offset) ||
+  if (typeof offset === 'undefined' ||
+    typeof limit === 'undefined' ||
+    !validator.isNumeric(offset) ||
     !validator.isNumeric(limit) ||
     parseInt(offset, 10) < 0 ||
     parseInt(limit, 10) < 1) {
     res.status(400).send('잘못된 query parameter');
     return;
   }
+  next();
+}
+
+// GET /qna/:id
+export function getQuestion(req, res, next) {
+  const id = req.params.id;
+  
+  if (!validator.isNumeric(id)) {
+    res.status(400).send('path parameter validation 실패');
+    return;
+  }
+
   next();
 }

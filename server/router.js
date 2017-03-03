@@ -31,8 +31,30 @@ router.get('/qna', validator.getQuestionList, (req, res) => {
   });
 });
 //   Q&A 게시물 읽기 (단일 항목) API
-router.get('/qna/:id', (req, res) => {
-  res.send(req.url);
+router.get('/qna/:id', validator.getQuestion, (req, res) => {
+  const id = req.params.id;
+  cache.getQuestionFromCache(id).then((recordFromCache) => {
+    if (recordFromCache.length < 1) {
+      res.set('X-Cache-Hit', 'false');
+      return db.getQuestion(id);
+    } else {
+      res.set('X-Cache-Hit', 'true');
+      return recordFromCache;
+    }
+  }).then((question) => {
+    if (question.length < 1) {
+      res.status(404).send('존재하지 않는 게시물');
+      return;
+    }
+
+    if (res.get('X-Cache-Hit') === 'false') {
+      cache.setQuestionCache(id, question);
+    } 
+    res.send(question);
+  }).catch((err) => {
+    console.log(err);
+    res.status(500).send('서버 에러');
+  });
 });
 //   Q&A 게시물 CSV 내보내기 API
 router.get('/qna.csv', (req, res) => {
