@@ -2,13 +2,33 @@ import express from 'express';
 
 import * as validator from './validator';
 import * as db from './db';
+import * as cache from './cache';
 
 const router = express.Router();
 
 // get methods
 //   Q&A 게시물 목록 API
-router.get('/qna', (req, res) => {
-  res.send(req.url);
+router.get('/qna', validator.getQuestionList, (req, res) => {
+  const offset = req.params.offset;
+  const limit = req.params.limit;
+
+  cache.getQuestionListFromCache(offset, limit).then((recordsFromCache) => {
+    if (recordsFromCache.length < 1) {
+      res.set('X-Cache-Hit', 'false');
+      return db.getQuestionList(offset, limit);
+    } else {
+      res.set('X-Cache-Hit', 'true');
+      return recordsFromCache;
+    }
+  }).then((questionList) => {
+    if (res.get('X-Cache-Hit') === 'false') {
+      cache.setQuestionListCache(offset, limit, questionList);
+    } 
+    res.send(questionList);
+  }).catch((err) => {
+    console.log(err);
+    res.status(500).send('서버 에러');
+  });
 });
 //   Q&A 게시물 읽기 (단일 항목) API
 router.get('/qna/:id', (req, res) => {

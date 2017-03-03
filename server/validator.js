@@ -18,7 +18,6 @@ export function createQuestion(req, res, next) {
     max: 2000
   };
 
-
   if (!validator.isLength(body.title, titleLength) ||
     !validator.isLength(body.body, bodyLength)) {
     res.status(400).send('question payload validation 실패');
@@ -35,5 +34,20 @@ export function createQuestion(req, res, next) {
     }
   }
 
+  next();
+}
+
+// GET /qna
+export function getQuestionList(req, res, next) {
+  const offset = req.query.offset;
+  const limit = req.query.limit;
+
+  if (!validator.isNumeric(offset) ||
+    !validator.isNumeric(limit) ||
+    parseInt(offset, 10) < 0 ||
+    parseInt(limit, 10) < 1) {
+    res.status(400).send('잘못된 query parameter');
+    return;
+  }
   next();
 }
