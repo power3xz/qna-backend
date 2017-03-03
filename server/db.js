@@ -56,3 +56,19 @@ export function getQuestion(id) {
     }]);
   });
 }
+
+export function updateQuestion(id) {
+  return new Promise((resolve, reject) => {
+    resolve([{
+      "id": 2,
+      "title": "Lorem ipsum",
+      "createdAt": "2017-02-09T20:47:46.677Z",
+      "updatedAt": "2017-02-09T20:47:46.677Z",
+      "body": "The quick brown fox jumps over lazy dog, The quick brown fox jumps over lazy dog, The quick brown fox jumps over lazy dog",
+      "answers": [{
+        "lawyer": "홍길동",
+        "body": "The quick brown fox jumps over lazy dog, The quick brown fox jumps over lazy dog, The quick brown fox jumps over lazy dog"
+      }]
+    }]);
+  });
+}
