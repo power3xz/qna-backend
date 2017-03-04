@@ -2,7 +2,7 @@
 import Redis from 'ioredis';
 
 const redis = new Redis();
-const expiaryPeriod = 5 * 60;
+const expiryPeriod = 5 * 60;
 
 let disable = false;
 
@@ -30,7 +30,7 @@ export function setQuestionListCache(offset, limit, questionList) {
   };
 
   if (!disable) {
-    redis.set(JSON.stringify(param), JSON.stringify(questionList), 'EX', expiaryPeriod);
+    redis.set(JSON.stringify(param), JSON.stringify(questionList), 'EX', expiryPeriod);
   }
 }
 
@@ -48,7 +48,7 @@ export function getQuestionFromCache(id) {
 
 export function setQuestionCache(id, question) {
   if (!disable) {
-    redis.set(id, JSON.stringify(question), 'EX', expiaryPeriod);
+    redis.set(id, JSON.stringify(question), 'EX', expiryPeriod);
   }
 }
 
