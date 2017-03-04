@@ -6,15 +6,13 @@ import * as cache from './cache';
 
 const router = express.Router();
 
-cache.disable();
-
 // get methods
 //   Q&A 게시물 목록 API
 router.get('/qna', validationMiddleware.getQuestionList, (req, res) => {
   const offset = req.query.offset;
   const limit = req.query.limit;
   cache.getQuestionListFromCache(offset, limit).then((recordsFromCache) => {
-    if (recordsFromCache.length < 1) {
+    if (recordsFromCache === null) {
       res.set('X-Cache-Hit', 'false');
       return db.getQuestionList(offset, limit);
     } else {
@@ -36,7 +34,7 @@ router.get('/qna', validationMiddleware.getQuestionList, (req, res) => {
 router.get('/qna/:id', validationMiddleware.getQuestion, (req, res) => {
   const id = req.params.id;
   cache.getQuestionFromCache(id).then((recordFromCache) => {
-    if (recordFromCache.length < 1) {
+    if (recordFromCache === null) {
       res.set('X-Cache-Hit', 'false');
       return db.getQuestion(id);
     } else {
