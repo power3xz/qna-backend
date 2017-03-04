@@ -3,7 +3,7 @@ README
 backend stack
   nodejs
   express
-  database??
+  lokijs
   redis
 
 backend todos

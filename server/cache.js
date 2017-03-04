@@ -2,6 +2,7 @@
 
 let cachedQuestionList = [];
 let cachedQuetion = [];
+let disable = false;
 
 export function getQuestionListFromCache(offset, limit) {
   return new Promise((resolve, reject) => {
@@ -10,7 +11,9 @@ export function getQuestionListFromCache(offset, limit) {
 }
 
 export function setQuestionListCache(offset, limit, questionList) {
-  cachedQuestionList = questionList;
+  if (!disable) {
+    cachedQuestionList = questionList;
+  }
 }
 
 export function getQuestionFromCache(id) {
@@ -20,5 +23,11 @@ export function getQuestionFromCache(id) {
 }
 
 export function setQuestionCache(id, question) {
-  cachedQuetion = question;
+  if (!disable) {
+    cachedQuetion = question;
+  }
+}
+
+export function disable() {
+ disable = true;
 }

@@ -6,12 +6,13 @@ import * as cache from './cache';
 
 const router = express.Router();
 
+cache.disable();
+
 // get methods
 //   Q&A 게시물 목록 API
 router.get('/qna', validationMiddleware.getQuestionList, (req, res) => {
-  const offset = req.params.offset;
-  const limit = req.params.limit;
-
+  const offset = req.query.offset;
+  const limit = req.query.limit;
   cache.getQuestionListFromCache(offset, limit).then((recordsFromCache) => {
     if (recordsFromCache.length < 1) {
       res.set('X-Cache-Hit', 'false');
@@ -95,8 +96,8 @@ router.post('/qna/:id/export', (req, res) => {
 router.put('/qna/:id', validationMiddleware.updateQuestion, (req, res) => {
   const id = req.params.id;
   const question = req.body;
-  db.getQuestion(id).then((question) => {
-    if (question.length < 1) {
+  db.getQuestion(id).then((questionFromDB) => {
+    if (questionFromDB.length < 1) {
       res.status(404).send('존재하지 않는 게시물');
       return;
     }
@@ -115,8 +116,7 @@ router.delete('/qna/:id', validationMiddleware.deleteQuestion, (req, res) => {
   const id = req.params.id;
   db.getQuestion(id).then((question) => {
     if (question.length < 1) {
-      res.status(404).send('존재하지 않는 게시물');
-      return;
+      throw {code: 404};
     }
 
     return db.deleteQuestion(id);
@@ -124,8 +124,12 @@ router.delete('/qna/:id', validationMiddleware.deleteQuestion, (req, res) => {
     res.status(204).send('성공');
   }).catch((err) => {
     console.log(err);
-    res.status(400).send('서버 에러');
-  })
+    if (err.code === 404) {
+      res.status(404).send('존재하지 않는 게시물');
+    } else {
+      res.status(500).send('서버 에러');
+    }
+  });
 });
 
 export default router;
