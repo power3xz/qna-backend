@@ -1,4 +1,3 @@
-// 임시 구현
 import Redis from 'ioredis';
 
 const redis = new Redis();
