@@ -1,0 +1,23 @@
+backend와 frontend로 구분하여 작업을 진행하였습니다.
+backend에서 cache, database를 모듈화하여 이후 교체가 쉽도록 구현하였습니다.
+개선사항으로 
+1. request 모듈을 사용하여 POST /qna/:id/export구현
+2. cache 서버를 사용할 수 없을시 database에서 데이터 조회
+3. 에러처리 모듈화
+가 있습니다.
+
+frontend는 scaffolding으로 
+yeoman generator-angular-webpack-es6를 사용하여 기본 프로젝트를 구성하였습니다.
+시간이 부족하여 요구사항의 디테일한 부분을 구현하지 못해 완성도가 
+떨어지는점을 아쉽게 생각합니다.
+개선사항으로
+1. infinite scroll 추가
+2. backend 요청시 spinner 추가
+3. css 수정
+4. notification 기능 추가
+5. 크로스 브라우징 테스트
+6. form validation
+7. footer 수정
+가 있습니다.
+
+감사합니다.
